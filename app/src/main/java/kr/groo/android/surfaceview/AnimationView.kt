@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.*
 import android.os.Build
 import android.util.AttributeSet
+import android.util.Log
 import android.view.SurfaceHolder
 import android.view.SurfaceView
 import kotlinx.coroutines.*
@@ -52,7 +53,7 @@ class AnimationView(
         animationJob = animationScope.launch {
             while (animationJob?.isActive == true) {
                 val currentTime = System.currentTimeMillis()
-                println("${currentTime - previousTime}")
+                Log.e("Groo", "FPS: ${currentTime - previousTime}")
                 previousTime = currentTime
 
                 val canvas = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
