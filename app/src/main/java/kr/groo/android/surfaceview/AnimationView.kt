@@ -1,10 +1,7 @@
 package kr.groo.android.surfaceview
 
 import android.content.Context
-import android.graphics.Color
-import android.graphics.Paint
-import android.graphics.Point
-import android.graphics.PorterDuff
+import android.graphics.*
 import android.os.Build
 import android.util.AttributeSet
 import android.view.SurfaceHolder
@@ -21,7 +18,7 @@ class AnimationView(
         private val animationScope = CoroutineScope(Dispatchers.IO)
     }
 
-    private var currentTime = 0L
+    private var previousTime = 0L
     private val surfaceHolder = holder
     private val paint = Paint().apply {
         color = Color.RED
@@ -31,7 +28,11 @@ class AnimationView(
     private var items: Array<Point>? = null
 
     init {
+        setZOrderOnTop(true)
+
+        surfaceHolder.setFormat(PixelFormat.TRANSPARENT)
         surfaceHolder.addCallback(this)
+
         items = arrayOf(
             Point(100, 100),
             Point(200, 100),
@@ -50,9 +51,9 @@ class AnimationView(
     override fun surfaceCreated(holder: SurfaceHolder) {
         animationJob = animationScope.launch {
             while (animationJob?.isActive == true) {
-                val time = System.currentTimeMillis()
-                println("${time - currentTime}")
-                currentTime = time
+                val currentTime = System.currentTimeMillis()
+                println("${currentTime - previousTime}")
+                previousTime = currentTime
 
                 val canvas = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     surfaceHolder.lockHardwareCanvas()
